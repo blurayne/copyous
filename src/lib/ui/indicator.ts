@@ -224,19 +224,24 @@ export class ClipboardIndicator extends PanelMenu.Button {
 		dialog.open();
 	}
 
-	override vfunc_event(event: Clutter.Event): boolean {
-		if (
-			event.type() === Clutter.EventType.TOUCH_BEGIN ||
-			(event.type() === Clutter.EventType.BUTTON_PRESS && event.get_button() === Clutter.BUTTON_PRIMARY)
-		) {
+	override vfunc_button_press_event(event: Clutter.Event): boolean {
+		if (event.get_button() === Clutter.BUTTON_PRIMARY) {
 			this.emit('open-dialog');
 			return Clutter.EVENT_STOP;
 		}
-		if (event.type() === Clutter.EventType.BUTTON_PRESS && event.get_button() === Clutter.BUTTON_MIDDLE) {
+		if (event.get_button() === Clutter.BUTTON_MIDDLE) {
 			this.ext.openPreferences();
 			return Clutter.EVENT_STOP;
 		}
-		return super.vfunc_event(event);
+		return super.vfunc_button_press_event(event);
+	}
+
+	override vfunc_touch_event(event: Clutter.Event): boolean {
+		if (event.type() === Clutter.EventType.TOUCH_BEGIN) {
+			this.emit('open-dialog');
+			return Clutter.EVENT_STOP;
+		}
+		return super.vfunc_touch_event(event);
 	}
 
 	override destroy() {
